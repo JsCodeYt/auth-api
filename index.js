@@ -1,35 +1,34 @@
-const mongoose = require("mongoose")
-const express = require("express")
-const dotenv = require("dotenv")
-const morgan = require("morgan")
-const authRouter = require("./router/Auth")
+const index = require("./router/index");
+const mongoose = require("mongoose");
+const express = require("express");
+const dotenv = require("dotenv");
+const morgan = require("morgan");
 
-
-dotenv.config()
-const app = express()
+dotenv.config();
+const app = express();
 
 const connect = async () => {
-    try {
-        mongoose.set("strictQuery", true)
-        await mongoose.connect(process.env.MONGO_URL)
-        console.log("mongo active")
-    } catch (error) {
-        console.log('mongo error')
-    }
-}
+  try {
+    mongoose.set("strictQuery", true);
+    await mongoose.connect(process.env.MONGO_URL);
+    console.log("mongo active");
+  } catch (error) {
+    console.log("mongo error");
+  }
+};
 
-app.use(express.json())
-app.use(morgan("tiny"))
+app.use(express.json());
+app.use(morgan("tiny"));
 
 app.get("/", (req, res) => {
-    return res.status(200).json({
-        message: "server is running on production"
-    })
-})
+  return res.status(200).json({
+    message: "server is running on production",
+  });
+});
 
-app.use("/", authRouter)
+app.use("/", index.Auth);
 
 app.listen(process.env.PORT, () => {
-    connect()
-    console.log(`server is running on port ${process.env.PORT}`)
-})
+  connect();
+  console.log(`server is running on port ${process.env.PORT}`);
+});
